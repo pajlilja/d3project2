@@ -1,5 +1,10 @@
 <!DOCTYPE html>
+<head>
 <meta charset="utf-8">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+<link rel="stylesheet" href="styles.css">
+
+</head>
 <style>
 
   .names {
@@ -83,8 +88,94 @@
 <script src="d3-tip.js"></script>
 <script src="countrycodes.js"></script>
 
-
 <script>
+var activeWave = 0;
+function changewave(inwave) {
+  activeWave=inwave;
+  gowave6("V10: Feeling of happiness");
+}
+function gowave6(input) {
+  var no1 = 0;
+  var no2 = 0;
+  var no3 = 0;
+  var no4 = 0;
+var list = "";
+var type = "";
+var domain = [];
+if(input === "V10: Feeling of happiness") {
+  list = `<ul class="list-group listpadd">
+        <li class="list-group-item">1: Very happy</li>
+        <li class="list-group-item">2. Rather happy</li>
+        <li class="list-group-item">3. Not very happy</li>
+        <li class="list-group-item">4. Not at all happy</li>
+    </ul>`
+  type = "Happiness";
+  domain = [1.0,1.1,1.2,1.3,1.4,1.5,1.7,1.8,1.9,2.0];
+} else if (input === "V4: Important in life: Family" || input === "V9: Important in life: Religion") {
+  list = `<ul class="list-group listpadd">
+        <li class="list-group-item">1: Very important</li>
+        <li class="list-group-item">2. Rather important</li>
+        <li class="list-group-item">3. Not very important</li>
+        <li class="list-group-item">4. Not at all important</li>
+    </ul>`
+  if(input === "V4: Important in life: Family") {
+    type = "family importance"
+    domain = [1.0,1.05,1.1,1.15,1.2,1.25,1.3,1.35,1.4,1.45];
+    if(activeWave === 1) input = "V4: Family important";
+  } else {
+    type = "religion imortance";
+    domain = [1.3,1.6,1.9,2.2,2.5,2.8,3.0,3.2,3.4,3.6];
+    if(activeWave === 1) input = "V9: Religion important";
+
+  }
+} else if(input === "V109: Confidence: The armed forces") {
+  list = `<ul class="list-group listpadd">
+        <li class="list-group-item">1: A great deal</li>
+        <li class="list-group-item">2. Quite a lot</li>
+        <li class="list-group-item">3. Not very much</li>
+        <li class="list-group-item">4. None at all</li>
+    </ul>`
+  type = "Confidence in the armed forces";
+  domain = [1.3,1.6,1.9,2.2,2.5,2.8,3.0,3.2,3.4,3.6];
+  if(activeWave === 1) input = "V132: Confidence: Armed Forces";
+} else if(input === "V211: How proud of nationality") {
+  list = `<ul class="list-group listpadd">
+        <li class="list-group-item">1: Very proud</li>
+        <li class="list-group-item">2. Quite proud</li>
+        <li class="list-group-item">3. Not very proud</li>
+        <li class="list-group-item">4. Not at all proud</li>
+    </ul>`
+  type = "proud of nationality";
+  domain = [1.3,1.6,1.9,2.2,2.5,2.8,3.0,3.2,3.4,3.6];
+  if(activeWave === 1) input = "V209: How proud of nationality";
+} else if(input === "V184: Worries: A terrorist attack") {
+  list = `<ul class="list-group listpadd">
+        <li class="list-group-item">1: Very much</li>
+        <li class="list-group-item">2. A great deal</li>
+        <li class="list-group-item">3. Not much</li>
+        <li class="list-group-item">4. Not at all</li>
+    </ul>`
+    domain = [1.3,1.6,1.9,2.2,2.5,2.8,3.0,3.2,3.4,3.6];
+} else if(input === "V107: How much you trust: People of another nationality" || input === "V106: How much you trust: People of another religion") {
+  list = `<ul class="list-group listpadd">
+        <li class="list-group-item">1: Trust completely</li>
+        <li class="list-group-item">2. Trust somewhat</li>
+        <li class="list-group-item">3. Do not trust very much</li>
+        <li class="list-group-item">4. Do not trust at all</li>
+    </ul>`
+  if(input === "V107: How much you trust: People of another nationality") {
+    type = "trust of other nationality"
+    domain = [1.8,2.1,2.4,2.7,3.0,3.1,3.2,3.3,3.4,3.5];
+    if(activeWave === 1) input = "V130: Trust: People of another nationality";
+  } else {
+    type = "trust of other religion";
+    domain = [1.8,2.1,2.4,2.7,3.0,3.1,3.2,3.3,3.4,3.5];
+    if(activeWave === 1) input = "V129: Trust: People of another religion";
+  }
+}
+
+document.getElementById("waves").innerHTML = list;
+var question = input;
 var format = d3.format(",");
 
 // Set tooltips
@@ -92,7 +183,7 @@ var tip = d3.tip()
             .attr('class', 'd3-tip')
             .offset([-10, 0])
             .html(function(d) {
-              return "<strong>Country: </strong><span class='details'>" + d.properties.name + "<br></span>" + "<strong>Average Happines: </strong><span class='details'>" + format(d.population) +"</span>";
+              return "<strong>Country: </strong><span class='details'>" + d.properties.name + "<br></span>" + "<strong>Average " + type +": </strong><span class='details'>" + format(d.population) +"</span>";
             })
 
 var margin = {top: 0, right: 0, bottom: 0, left: 0},
@@ -100,12 +191,11 @@ var margin = {top: 0, right: 0, bottom: 0, left: 0},
             height = 700 - margin.top - margin.bottom;
 
 var color = d3.scaleThreshold()
-    .domain([0.1,0.3,0.9,1.2,1.5,1.8,2.1,2.3,2.6,3.0])
-    //.domain([10000,100000,500000,1000000,5000000,10000000,50000000,100000000,500000000,1500000000])
+    .domain(domain)
     .range(["rgb(247,251,255)", "rgb(222,235,247)", "rgb(198,219,239)", "rgb(158,202,225)", "rgb(107,174,214)", "rgb(66,146,198)","rgb(33,113,181)","rgb(8,81,156)","rgb(8,48,107)","rgb(3,19,43)"]);
 
 var path = d3.geoPath();
-
+d3.select("svg").remove();
 var svg = d3.select("body")
             .append("svg")
             .attr("width", width)
@@ -120,125 +210,268 @@ var projection = d3.geoMercator()
 var path = d3.geoPath().projection(projection);
 
 svg.call(tip);
-
-  queue()
+if(activeWave === 0) loadWave6();
+else if (activeWave === 1) loadWave5();
+  /*queue()
     .defer(d3.json, "./world_countries.json")
-    .defer(d3.json, "./waves/wave6splitted/Sweden.json")
-    .defer(d3.json, "./waves/wave6splitted/Spain.json")
-    .defer(d3.json, "./waves/wave6splitted/United.json")
+    .defer(d3.json, "./waves/wave6splitted/Algeria.json")
+    .defer(d3.json, "./waves/wave6splitted/Armenia.json")
     .defer(d3.json, "./waves/wave6splitted/Argentina.json")
-    .defer(d3.json, "./waves/wave6splitted/China.json")
-    .defer(d3.json, "./waves/wave6splitted/Chile.json")
-    .defer(d3.json, "./waves/wave6splitted/India.json")
-    .defer(d3.json, "./waves/wave6splitted/Japan.json")
-    .defer(d3.json, "./waves/wave6splitted/Peru.json")
-    .defer(d3.json, "./waves/wave6splitted/South-Africa.json")
-    .defer(d3.json, "./waves/wave6splitted/South.json")
-    .defer(d3.json, "./waves/wave6splitted/Turkey.json")
     .defer(d3.json, "./waves/wave6splitted/Australia.json")
+    .defer(d3.json, "./waves/wave6splitted/Azerbaijan.json")
+    .defer(d3.json, "./waves/wave6splitted/Belarus.json")
+    .defer(d3.json, "./waves/wave6splitted/Bahrein.json")
+    .defer(d3.json, "./waves/wave6splitted/Brasil.json")
+    .defer(d3.json, "./waves/wave6splitted/Chile.json")
+    .defer(d3.json, "./waves/wave6splitted/China.json")
+    .defer(d3.json, "./waves/wave6splitted/Colombia.json")
+    .defer(d3.json, "./waves/wave6splitted/Cyprus.json")
+    .defer(d3.json, "./waves/wave6splitted/Ecuador.json")
+    .defer(d3.json, "./waves/wave6splitted/Egypt.json")
+    .defer(d3.json, "./waves/wave6splitted/Estonia.json")
+    .defer(d3.json, "./waves/wave6splitted/Georgia.json")
+    .defer(d3.json, "./waves/wave6splitted/Germany.json")
+    .defer(d3.json, "./waves/wave6splitted/Ghana.json")
+    .defer(d3.json, "./waves/wave6splitted/Haiti.json")
+    .defer(d3.json, "./waves/wave6splitted/Hong.json")
+    .defer(d3.json, "./waves/wave6splitted/India.json")
     .defer(d3.json, "./waves/wave6splitted/Iraq.json")
+    .defer(d3.json, "./waves/wave6splitted/Japan.json")
+    .defer(d3.json, "./waves/wave6splitted/Jordan.json")
+    .defer(d3.json, "./waves/wave6splitted/Kazakhstan.json")
+    .defer(d3.json, "./waves/wave6splitted/Kuwait.json")
+    .defer(d3.json, "./waves/wave6splitted/Kyrgyzstan.json")
+    .defer(d3.json, "./waves/wave6splitted/Lebanon.json")
+    .defer(d3.json, "./waves/wave6splitted/Libya.json")
+    .defer(d3.json, "./waves/wave6splitted/Malaysia.json")
     .defer(d3.json, "./waves/wave6splitted/Mexico.json")
     .defer(d3.json, "./waves/wave6splitted/Morocco.json")
+    .defer(d3.json, "./waves/wave6splitted/Netherlands.json")
     .defer(d3.json, "./waves/wave6splitted/New.json")
     .defer(d3.json, "./waves/wave6splitted/Nigeria.json")
     .defer(d3.json, "./waves/wave6splitted/Pakistan.json")
+    .defer(d3.json, "./waves/wave6splitted/Palestine.json")
+    .defer(d3.json, "./waves/wave6splitted/Peru.json")
     .defer(d3.json, "./waves/wave6splitted/Philippines.json")
     .defer(d3.json, "./waves/wave6splitted/Poland.json")
+    .defer(d3.json, "./waves/wave6splitted/Qatar.json")
+    .defer(d3.json, "./waves/wave6splitted/Romania.json")
     .defer(d3.json, "./waves/wave6splitted/Russia.json")
+    .defer(d3.json, "./waves/wave6splitted/Rwanda.json")
+    .defer(d3.json, "./waves/wave6splitted/Singapore.json")
     .defer(d3.json, "./waves/wave6splitted/Slovenia.json")
+    .defer(d3.json, "./waves/wave6splitted/South.json")
+    .defer(d3.json, "./waves/wave6splitted/South-Africa.json")
+    .defer(d3.json, "./waves/wave6splitted/Sweden.json")
+    .defer(d3.json, "./waves/wave6splitted/Spain.json")
     .defer(d3.json, "./waves/wave6splitted/Taiwan.json")
+    .defer(d3.json, "./waves/wave6splitted/Turkey.json")
+    .defer(d3.json, "./waves/wave6splitted/Thailand.json")
+    .defer(d3.json, "./waves/wave6splitted/Trinidad.json")
+    .defer(d3.json, "./waves/wave6splitted/Tunisia.json")
+    .defer(d3.json, "./waves/wave6splitted/United.json")
     .defer(d3.json, "./waves/wave6splitted/Ukraine.json")
     .defer(d3.json, "./waves/wave6splitted/Uruguay.json")
-    .await(ready);
+    .defer(d3.json, "./waves/wave6splitted/Uruguay.json")
+    .defer(d3.json, "./waves/wave6splitted/Yemen.json")
+    .defer(d3.json, "./waves/wave6splitted/Zimbabwe.json")
+    .await(ready);*/
 
 
 function loadWave6() {
   queue()
     .defer(d3.json, "./world_countries.json")
-    .defer(d3.json, "./waves/wave6splitted/Sweden.json")
-    .defer(d3.json, "./waves/wave6splitted/Spain.json")
-    .defer(d3.json, "./waves/wave6splitted/United.json")
+    .defer(d3.json, "./waves/wave6splitted/Algeria.json")
+    .defer(d3.json, "./waves/wave6splitted/Armenia.json")
     .defer(d3.json, "./waves/wave6splitted/Argentina.json")
-    .defer(d3.json, "./waves/wave6splitted/China.json")
-    .defer(d3.json, "./waves/wave6splitted/Chile.json")
-    .defer(d3.json, "./waves/wave6splitted/India.json")
-    .defer(d3.json, "./waves/wave6splitted/Japan.json")
-    .defer(d3.json, "./waves/wave6splitted/Peru.json")
-    .defer(d3.json, "./waves/wave6splitted/South-Africa.json")
-    .defer(d3.json, "./waves/wave6splitted/South.json")
-    .defer(d3.json, "./waves/wave6splitted/Turkey.json")
     .defer(d3.json, "./waves/wave6splitted/Australia.json")
+    .defer(d3.json, "./waves/wave6splitted/Azerbaijan.json")
+    .defer(d3.json, "./waves/wave6splitted/Belarus.json")
+    .defer(d3.json, "./waves/wave6splitted/Bahrein.json")
+    .defer(d3.json, "./waves/wave6splitted/Brasil.json")
+    .defer(d3.json, "./waves/wave6splitted/Chile.json")
+    .defer(d3.json, "./waves/wave6splitted/China.json")
+    .defer(d3.json, "./waves/wave6splitted/Colombia.json")
+    .defer(d3.json, "./waves/wave6splitted/Cyprus.json")
+    .defer(d3.json, "./waves/wave6splitted/Ecuador.json")
+    .defer(d3.json, "./waves/wave6splitted/Egypt.json")
+    .defer(d3.json, "./waves/wave6splitted/Estonia.json")
+    .defer(d3.json, "./waves/wave6splitted/Georgia.json")
+    .defer(d3.json, "./waves/wave6splitted/Germany.json")
+    .defer(d3.json, "./waves/wave6splitted/Ghana.json")
+    .defer(d3.json, "./waves/wave6splitted/Haiti.json")
+    .defer(d3.json, "./waves/wave6splitted/Hong.json")
+    .defer(d3.json, "./waves/wave6splitted/India.json")
     .defer(d3.json, "./waves/wave6splitted/Iraq.json")
+    .defer(d3.json, "./waves/wave6splitted/Japan.json")
+    .defer(d3.json, "./waves/wave6splitted/Jordan.json")
+    .defer(d3.json, "./waves/wave6splitted/Kazakhstan.json")
+    .defer(d3.json, "./waves/wave6splitted/Kuwait.json")
+    .defer(d3.json, "./waves/wave6splitted/Kyrgyzstan.json")
+    .defer(d3.json, "./waves/wave6splitted/Lebanon.json")
+    .defer(d3.json, "./waves/wave6splitted/Libya.json")
+    .defer(d3.json, "./waves/wave6splitted/Malaysia.json")
     .defer(d3.json, "./waves/wave6splitted/Mexico.json")
     .defer(d3.json, "./waves/wave6splitted/Morocco.json")
+    .defer(d3.json, "./waves/wave6splitted/Netherlands.json")
     .defer(d3.json, "./waves/wave6splitted/New.json")
     .defer(d3.json, "./waves/wave6splitted/Nigeria.json")
     .defer(d3.json, "./waves/wave6splitted/Pakistan.json")
+    .defer(d3.json, "./waves/wave6splitted/Palestine.json")
+    .defer(d3.json, "./waves/wave6splitted/Peru.json")
     .defer(d3.json, "./waves/wave6splitted/Philippines.json")
     .defer(d3.json, "./waves/wave6splitted/Poland.json")
+    .defer(d3.json, "./waves/wave6splitted/Qatar.json")
+    .defer(d3.json, "./waves/wave6splitted/Romania.json")
     .defer(d3.json, "./waves/wave6splitted/Russia.json")
+    .defer(d3.json, "./waves/wave6splitted/Rwanda.json")
+    .defer(d3.json, "./waves/wave6splitted/Singapore.json")
     .defer(d3.json, "./waves/wave6splitted/Slovenia.json")
+    .defer(d3.json, "./waves/wave6splitted/South.json")
+    .defer(d3.json, "./waves/wave6splitted/South-Africa.json")
+    .defer(d3.json, "./waves/wave6splitted/Sweden.json")
+    .defer(d3.json, "./waves/wave6splitted/Spain.json")
     .defer(d3.json, "./waves/wave6splitted/Taiwan.json")
+    .defer(d3.json, "./waves/wave6splitted/Turkey.json")
+    .defer(d3.json, "./waves/wave6splitted/Thailand.json")
+    .defer(d3.json, "./waves/wave6splitted/Trinidad.json")
+    .defer(d3.json, "./waves/wave6splitted/Tunisia.json")
+    .defer(d3.json, "./waves/wave6splitted/United.json")
     .defer(d3.json, "./waves/wave6splitted/Ukraine.json")
     .defer(d3.json, "./waves/wave6splitted/Uruguay.json")
+    .defer(d3.json, "./waves/wave6splitted/Yemen.json")
+    .defer(d3.json, "./waves/wave6splitted/Zimbabwe.json")
+    .await(ready);
+}
+function loadWave5() {
+  queue()
+    .defer(d3.json, "./world_countries.json")
+    .defer(d3.json, "./waves/wave5splitted/Andorra.json")
+    .defer(d3.json, "./waves/wave5splitted/Argentina.json")
+    .defer(d3.json, "./waves/wave5splitted/Australia.json")
+    .defer(d3.json, "./waves/wave5splitted/Bulgaria.json")
+    .defer(d3.json, "./waves/wave5splitted/Burkina.json")
+    .defer(d3.json, "./waves/wave5splitted/Brazil.json")
+    .defer(d3.json, "./waves/wave5splitted/Chile.json")
+    .defer(d3.json, "./waves/wave5splitted/China.json")
+    .defer(d3.json, "./waves/wave5splitted/Colombia.json")
+    .defer(d3.json, "./waves/wave5splitted/Cyprus.json")
+    .defer(d3.json, "./waves/wave5splitted/Canada.json")
+    .defer(d3.json, "./waves/wave5splitted/Egypt.json")
+    .defer(d3.json, "./waves/wave5splitted/Ethiopia.json")
+    .defer(d3.json, "./waves/wave5splitted/Finland.json")
+    .defer(d3.json, "./waves/wave5splitted/France.json")
+    .defer(d3.json, "./waves/wave5splitted/Georgia.json")
+    .defer(d3.json, "./waves/wave5splitted/Germany.json")
+    .defer(d3.json, "./waves/wave5splitted/Ghana.json")
+    .defer(d3.json, "./waves/wave5splitted/Guatemala.json")
+    .defer(d3.json, "./waves/wave5splitted/Hungary.json")
+    .defer(d3.json, "./waves/wave5splitted/Hong.json")
+    .defer(d3.json, "./waves/wave5splitted/India.json")
+    .defer(d3.json, "./waves/wave5splitted/Iraq.json")
+    .defer(d3.json, "./waves/wave5splitted/Indonesia.json")
+    .defer(d3.json, "./waves/wave5splitted/Italy.json")
+    .defer(d3.json, "./waves/wave5splitted/Iran.json")
+    .defer(d3.json, "./waves/wave5splitted/Japan.json")
+    .defer(d3.json, "./waves/wave5splitted/Malaysia.json")
+    .defer(d3.json, "./waves/wave5splitted/Mexico.json")
+    .defer(d3.json, "./waves/wave5splitted/Morocco.json")
+    .defer(d3.json, "./waves/wave5splitted/Mali.json")
+    .defer(d3.json, "./waves/wave5splitted/Moldova.json")
+    .defer(d3.json, "./waves/wave5splitted/Netherlands.json")
+    .defer(d3.json, "./waves/wave5splitted/New.json")
+    .defer(d3.json, "./waves/wave5splitted/Norway.json")    
+    .defer(d3.json, "./waves/wave5splitted/Peru.json")
+    .defer(d3.json, "./waves/wave5splitted/Poland.json")
+    .defer(d3.json, "./waves/wave5splitted/Romania.json")
+    .defer(d3.json, "./waves/wave5splitted/Russian.json")
+    .defer(d3.json, "./waves/wave5splitted/Rwanda.json")
+    .defer(d3.json, "./waves/wave5splitted/Slovenia.json")
+    .defer(d3.json, "./waves/wave5splitted/Sweden.json")
+    .defer(d3.json, "./waves/wave5splitted/Switzerland.json")
+    .defer(d3.json, "./waves/wave5splitted/Spain.json")
+    .defer(d3.json, "./waves/wave5splitted/Taiwan.json")
+    .defer(d3.json, "./waves/wave5splitted/Turkey.json")
+    .defer(d3.json, "./waves/wave5splitted/Thailand.json")
+    .defer(d3.json, "./waves/wave5splitted/Trinidad.json")
+    .defer(d3.json, "./waves/wave5splitted/United.json")
+    .defer(d3.json, "./waves/wave5splitted/Ukranie.json")
+    .defer(d3.json, "./waves/wave5splitted/Uruguay.json")
+    .defer(d3.json, "./waves/wave5splitted/Vietnam.json")
+    .defer(d3.json, "./waves/wave5splitted/Zambia.json")
     .await(ready);
 }
 
-function ready2(error, data1, data2, data3) {
-  console.log("hallå");
-  
-  console.log(data1);
-  console.log(data2);
-  console.log(data3);
-
-}
-
-
-
 function parsedata(data) {
-  console.log(data[0]);
-
   var list = [];
   let count = 0;
   let total = 0;
-  console.log(parseInt(data[0]["V10: Feeling of happiness"]));
+  no1 = 0;
+  no2 = 0;
+  no3 = 0;
+  no4 = 0;
 
   data.forEach(d => {
-    if(d["V10: Feeling of happiness"] != null) {
-      total += parseInt(d["V10: Feeling of happiness"]);
+    if(d[question] != null && d[question] > 0 && d[question] < 5) {
+      total += parseInt(d[question]);
       count += 1;
     }
+    if(parseInt(d[question]) === 1) {
+      no1 += 1;
+    }
+    else if(parseInt(d[question]) === 2) {
+      no2 += 1;
+
+    }
+    else if(parseInt(d[question]) === 3) {
+      no3 += 1;
+      
+    }
+    else if(parseInt(d[question]) === 4) {
+      no4 += 1;
+      
+    }
   })
-  console.log(total/count);
-  
+  no1 = no1/count;
+  no2 = no2/count;
+  no3 = no3/count;
+  no4 = no4/count;
+
   return total/count;
 }
 
 function ready(error, ...datalist) {
+  console.log(error);
   console.log(datalist);
   var data = datalist[0];
-
   var populationById = {};
-
   var map = {}
+  var totalones = {}
+  var totaltwos = {}
+  var totalthrees = {}
+  var totalfours = {}
+  var codes;
+  if(activeWave === 0) codes = wave6codes;
+  else if(activeWave === 1) codes = wave5codes;
 
-  //population.forEach(function(d) { populationById[d.id] = +d.population; });
 
   datalist.forEach(function (d,i) { 
     if(i === 0) {}
     else {
-      const country = wave6codes[d[0]["V2: Country Code"]];
+      const country = codes[d[0]["V2: Country Code"]];
       map[country] = parsedata(d);
+      totalones[country] = no1;
+      totaltwos[country] = no2;
+      totalthrees[country] = no3;
+      totalfours[country] = no4;
     }
   });
   datalist[0].features.forEach(function(d) {
     d.population = map[d.properties.name];
-    /*if(d.properties.name === wave6codes[d[0]["V2: Country Code"]]) {
-      d.population = map[wave6codes[d[0]["V2: Country Code"]]]
-    } else if(d.properties.name === wave6codes[spain[0]["V2: Country Code"]]) {
-      d.population = spahappi;
-    }
-    else d.population = 0;*/
+    d.totalones = totalones[d.properties.name];
+    d.totaltwos = totaltwos[d.properties.name];
+    d.totalthrees = totalthrees[d.properties.name];
+    d.totalfours = totalfours[d.properties.name];
   });
   svg.append("g")
       .attr("class", "countries")
@@ -250,6 +483,33 @@ function ready(error, ...datalist) {
       .style('stroke', 'white')
       .style('stroke-width', 1.5)
       .style("opacity",0.8)
+      .attr("data-toggle", "modal")
+      .attr("data-target", "#exampleModal")
+      .on('click', function(d) {
+  var test = `
+  <tr>
+      <th scope="row">1</th>
+      <td>1</td>
+      <td>`+d.totalones*100+`%</td>
+    </tr>
+    <tr>
+      <th scope="row">2</th>
+      <td>2</td>
+      <td>`+d.totaltwos*100+`%</td>
+    </tr>
+    <tr>
+      <th scope="row">3</th>
+      <td>3</td>
+      <td>`+d.totalthrees*100+`%</td>
+    </tr>
+    <tr>
+      <th scope="row">4</th>
+      <td>4</td>
+      <td>`+d.totalfours*100+`%</td>
+    </tr>`
+
+  document.getElementById("tablecontent").innerHTML = test;
+      })
       // tooltips
         .style("stroke","white")
         .style('stroke-width', 0.3)
@@ -273,12 +533,66 @@ function ready(error, ...datalist) {
 
   svg.append("path")
       .datum(topojson.mesh(data.features, function(a, b) { return a.id !== b.id; }))
-       // .datum(topojson.mesh(data.features, function(a, b) { return a !== b; }))
       .attr("class", "names")
       .attr("d", path);
-}
 
+}
+}
 </script>
-<div>hejsan</div>
+<div class="waves2" id="waves"></div>
+<div class="btn-group bar" role="group" aria-label="Basic example">
+    <button type="button" class="btn btn-secondary" onclick="gowave6('V10: Feeling of happiness')">UnHappiness</button>
+    <button type="button" class="btn btn-secondary" onclick="gowave6('V4: Important in life: Family')">Family Importance</button>
+    <button type="button" class="btn btn-secondary" onclick="gowave6('V9: Important in life: Religion')">Religion Importance</button>
+    <button type="button" class="btn btn-secondary" onclick="gowave6('V109: Confidence: The armed forces')">Confidence in armed forces</button>
+    <button type="button" class="btn btn-secondary" onclick="gowave6('V211: How proud of nationality')">Proud of nationality</button>
+    <button type="button" class="btn btn-secondary" onclick="gowave6('V184: Worries: A terrorist attack')">Afriad of terrorist attack</button>
+    <button type="button" class="btn btn-secondary" onclick="gowave6('V107: How much you trust: People of another nationality')">Trust of other nationalities</button>
+    <button type="button" class="btn btn-secondary" onclick="gowave6('V106: How much you trust: People of another religion')">Trust of other religion</button>
+    <div class="btn-group" role="group">
+        <button id="btnGroupDrop1" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Choose timeinterval
+        </button>
+        <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+            <a class="dropdown-item" href="#" onclick="changewave(0)">2010-2014</a>
+            <a class="dropdown-item" href="#" onclick="changewave(1)">2005-2009</a>
+            <a class="dropdown-item" href="#" onclick="changewave(2)">1999-2004</a>
+            <a class="dropdown-item" href="#" onclick="changewave(3)">1995-1998</a>
+        </div>
+      </div>
+  </div>
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">People answered the following</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body" id="modalbody">
+              <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Answer</th>
+                  <th scope="col">Percent of total</th>
+                </tr>
+              </thead>
+              <tbody id="tablecontent">
+                
+              </tbody>
+            </table>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
 </body>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
 </html>
