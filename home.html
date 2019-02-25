@@ -111,6 +111,7 @@ if(input === "V10: Feeling of happiness") {
     </ul>`
   type = "Happiness";
   domain = [1.0,1.1,1.2,1.3,1.4,1.5,1.7,1.8,1.9,2.0];
+  if(activeWave === 2) input = "V11: State of mind";
 } else if (input === "V4: Important in life: Family" || input === "V9: Important in life: Religion") {
   list = `<ul class="list-group listpadd">
         <li class="list-group-item">1: Very important</li>
@@ -121,11 +122,11 @@ if(input === "V10: Feeling of happiness") {
   if(input === "V4: Important in life: Family") {
     type = "family importance"
     domain = [1.0,1.05,1.1,1.15,1.2,1.25,1.3,1.35,1.4,1.45];
-    if(activeWave === 1) input = "V4: Family important";
+    if(activeWave === 1 || activeWave === 2) input = "V4: Family important";
   } else {
     type = "religion imortance";
     domain = [1.3,1.6,1.9,2.2,2.5,2.8,3.0,3.2,3.4,3.6];
-    if(activeWave === 1) input = "V9: Religion important";
+    if(activeWave === 1 || activeWave === 2) input = "V9: Religion important";
 
   }
 } else if(input === "V109: Confidence: The armed forces") {
@@ -138,6 +139,9 @@ if(input === "V10: Feeling of happiness") {
   type = "Confidence in the armed forces";
   domain = [1.3,1.6,1.9,2.2,2.5,2.8,3.0,3.2,3.4,3.6];
   if(activeWave === 1) input = "V132: Confidence: Armed Forces";
+  else if(activeWave === 2) input = "V148: Confidence: armed forces";
+  else if(activeWave === 3) input = "V136: Confidence: The armed forces";
+
 } else if(input === "V211: How proud of nationality") {
   list = `<ul class="list-group listpadd">
         <li class="list-group-item">1: Very proud</li>
@@ -148,6 +152,8 @@ if(input === "V10: Feeling of happiness") {
   type = "proud of nationality";
   domain = [1.3,1.6,1.9,2.2,2.5,2.8,3.0,3.2,3.4,3.6];
   if(activeWave === 1) input = "V209: How proud of nationality";
+  else if(activeWave === 2) input = "V216: How proud of nationality";  
+  else if(activeWave === 3) input = "V205: How proud are you to be [nationality]";
 } else if(input === "V184: Worries: A terrorist attack") {
   list = `<ul class="list-group listpadd">
         <li class="list-group-item">1: Very much</li>
@@ -212,6 +218,8 @@ var path = d3.geoPath().projection(projection);
 svg.call(tip);
 if(activeWave === 0) loadWave6();
 else if (activeWave === 1) loadWave5();
+else if (activeWave === 2) loadWave4();
+else if (activeWave === 3) loadWave3();
   /*queue()
     .defer(d3.json, "./world_countries.json")
     .defer(d3.json, "./waves/wave6splitted/Algeria.json")
@@ -401,6 +409,108 @@ function loadWave5() {
     .defer(d3.json, "./waves/wave5splitted/Zambia.json")
     .await(ready);
 }
+function loadWave4() {
+  queue()
+    .defer(d3.json, "./world_countries.json")
+    .defer(d3.json, "./waves/wave4splitted/Albania.json")
+    .defer(d3.json, "./waves/wave4splitted/Algeria.json")
+    .defer(d3.json, "./waves/wave4splitted/Argentina.json")
+    .defer(d3.json, "./waves/wave4splitted/Bangladesh.json")
+    .defer(d3.json, "./waves/wave4splitted/Bosnia.json")
+    .defer(d3.json, "./waves/wave4splitted/Canada.json")
+    .defer(d3.json, "./waves/wave4splitted/Chile.json")
+    .defer(d3.json, "./waves/wave4splitted/China.json")
+    .defer(d3.json, "./waves/wave4splitted/Egypt.json")
+    .defer(d3.json, "./waves/wave4splitted/India.json")
+    .defer(d3.json, "./waves/wave4splitted/Iraq.json")
+    .defer(d3.json, "./waves/wave4splitted/Indonesia.json")
+    .defer(d3.json, "./waves/wave4splitted/Iran.json")
+    .defer(d3.json, "./waves/wave4splitted/Iraq.json")
+    .defer(d3.json, "./waves/wave4splitted/Israel.json")
+    .defer(d3.json, "./waves/wave4splitted/Japan.json")
+    .defer(d3.json, "./waves/wave4splitted/Jordan.json")
+    .defer(d3.json, "./waves/wave4splitted/Kyrgyzstan.json")
+    .defer(d3.json, "./waves/wave4splitted/Macedonia.json")
+    .defer(d3.json, "./waves/wave4splitted/Mexico.json")
+    .defer(d3.json, "./waves/wave4splitted/Morocco.json")
+    .defer(d3.json, "./waves/wave4splitted/Montenegro.json")
+    .defer(d3.json, "./waves/wave4splitted/Moldova.json")
+    .defer(d3.json, "./waves/wave4splitted/Nigeria.json")
+    .defer(d3.json, "./waves/wave4splitted/Peru.json")
+    .defer(d3.json, "./waves/wave4splitted/Pakistan.json")
+    .defer(d3.json, "./waves/wave4splitted/Puerto.json")
+    .defer(d3.json, "./waves/wave4splitted/Philippines.json")
+    .defer(d3.json, "./waves/wave4splitted/Saudi.json")
+    .defer(d3.json, "./waves/wave4splitted/Serbia.json")
+    .defer(d3.json, "./waves/wave4splitted/Singapore.json")
+    .defer(d3.json, "./waves/wave4splitted/Sweden.json")
+    .defer(d3.json, "./waves/wave4splitted/Spain.json")
+    .defer(d3.json, "./waves/wave4splitted/Turkey.json")
+    .defer(d3.json, "./waves/wave4splitted/Tanzania.json")
+    .defer(d3.json, "./waves/wave4splitted/United.json")
+    .defer(d3.json, "./waves/wave4splitted/Uganda.json")
+    .defer(d3.json, "./waves/wave4splitted/Venezuela.json")
+    .defer(d3.json, "./waves/wave4splitted/Vietnam.json")
+    .defer(d3.json, "./waves/wave4splitted/Zimbabwe.json")
+    .await(ready);
+}
+
+function loadWave3() {
+  queue()
+    .defer(d3.json, "./world_countries.json")
+    .defer(d3.json, "./waves/wave3splitted/Albania.json")
+    .defer(d3.json, "./waves/wave3splitted/Armenia.json")
+    .defer(d3.json, "./waves/wave3splitted/Argentina.json")
+    .defer(d3.json, "./waves/wave3splitted/Azerbaijan.json")
+    .defer(d3.json, "./waves/wave3splitted/Australia.json")
+    .defer(d3.json, "./waves/wave3splitted/Bangladesh.json")
+    .defer(d3.json, "./waves/wave3splitted/Bosnia.json")
+    .defer(d3.json, "./waves/wave3splitted/Belarus.json")
+    .defer(d3.json, "./waves/wave3splitted/Bulgaria.json")
+    .defer(d3.json, "./waves/wave3splitted/Brazil.json")
+    .defer(d3.json, "./waves/wave3splitted/Croatia.json")
+    .defer(d3.json, "./waves/wave3splitted/Chile.json")
+    .defer(d3.json, "./waves/wave3splitted/China.json")
+    .defer(d3.json, "./waves/wave3splitted/Czech.json")
+    .defer(d3.json, "./waves/wave3splitted/Dominican.json")
+    .defer(d3.json, "./waves/wave3splitted/El.json")
+    .defer(d3.json, "./waves/wave3splitted/Estonia.json")
+    .defer(d3.json, "./waves/wave3splitted/Finland.json")
+    .defer(d3.json, "./waves/wave3splitted/Georgia.json")
+    .defer(d3.json, "./waves/wave3splitted/Germany.json")
+    .defer(d3.json, "./waves/wave3splitted/Great.json")
+    .defer(d3.json, "./waves/wave3splitted/Hungary.json")
+    .defer(d3.json, "./waves/wave3splitted/India.json")
+    .defer(d3.json, "./waves/wave3splitted/Japan.json")
+    .defer(d3.json, "./waves/wave3splitted/Latvia.json")
+    .defer(d3.json, "./waves/wave3splitted/Lithuania.json")
+    .defer(d3.json, "./waves/wave3splitted/Macedonia.json")
+    .defer(d3.json, "./waves/wave3splitted/Mexico.json")
+    .defer(d3.json, "./waves/wave3splitted/Montenegro.json")
+    .defer(d3.json, "./waves/wave3splitted/Moldova.json")
+    .defer(d3.json, "./waves/wave3splitted/Nigeria.json")
+    .defer(d3.json, "./waves/wave3splitted/Norway.json")
+    .defer(d3.json, "./waves/wave3splitted/New.json")
+    .defer(d3.json, "./waves/wave3splitted/Peru.json")
+    .defer(d3.json, "./waves/wave3splitted/Puerto.json")
+    .defer(d3.json, "./waves/wave3splitted/Poland.json")
+    .defer(d3.json, "./waves/wave3splitted/Philippines.json")
+    .defer(d3.json, "./waves/wave3splitted/Romania.json")
+    .defer(d3.json, "./waves/wave3splitted/Russia.json")
+    .defer(d3.json, "./waves/wave3splitted/Serbia.json")
+    .defer(d3.json, "./waves/wave3splitted/Slovakia.json")
+    .defer(d3.json, "./waves/wave3splitted/Sweden.json")
+    .defer(d3.json, "./waves/wave3splitted/Spain.json")
+    .defer(d3.json, "./waves/wave3splitted/Slovenia.json")
+    .defer(d3.json, "./waves/wave3splitted/Switzerland.json")
+    .defer(d3.json, "./waves/wave3splitted/Turkey.json")
+    .defer(d3.json, "./waves/wave3splitted/Taiwan.json")
+    .defer(d3.json, "./waves/wave3splitted/USA.json")
+    .defer(d3.json, "./waves/wave3splitted/Ukranie.json")
+    .defer(d3.json, "./waves/wave3splitted/Uruguay.json")
+    .defer(d3.json, "./waves/wave3splitted/Venezuela.json")
+    .await(ready);
+}
 
 function parsedata(data) {
   var list = [];
@@ -451,14 +561,18 @@ function ready(error, ...datalist) {
   var totalthrees = {}
   var totalfours = {}
   var codes;
-  if(activeWave === 0) codes = wave6codes;
-  else if(activeWave === 1) codes = wave5codes;
+  var codestring = "";
+  if(activeWave === 0) {codes = wave6codes; codestring="V2: Country Code";}
+  else if(activeWave === 1) {codes = wave5codes; codestring="V2: Country/Region";}
+  else if(activeWave === 2) {codes = wave4codes; codestring="V2: Country/Region";}
+  else if(activeWave === 3) {codes = wave3codes; codestring="V2: Country";}
+
 
 
   datalist.forEach(function (d,i) { 
     if(i === 0) {}
     else {
-      const country = codes[d[0]["V2: Country Code"]];
+      const country = codes[d[0][codestring]];
       map[country] = parsedata(d);
       totalones[country] = no1;
       totaltwos[country] = no2;
